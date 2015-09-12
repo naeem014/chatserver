@@ -16,39 +16,39 @@ io.sockets.on('connection', function (socket) {
         var arr = data.split(",");
         var p_id = arr[0];
         var u_id = arr[1]; 
-        if (team_map.has(arr[0])) {
-            var arr_ = team_map.get(arr[0]);
-            arr_.push(socket);
-            team_map.set(arr[0], arr_);
+        if (team_map.has(p_id) {
+            var sockets_array = team_map.get(p_id);
+            sockets_array.push(socket);
+            team_map.set(p_id, sockets_array);
         } else {
-            team_map.set(arr[0], [socket]);
+            team_map.set(p_id, [socket]);
         }
-        user_map.set(arr[0]+','+arr[1], socket);
+        user_map.set(p_id+','+u_id, socket);
 
         // online ussers info //
-        var userid = parseInt(arr[1], 10);
-        if (users_online.has(arr[0])) {
-            var arr_ = users_online.get(arr[0]);
-            if (arr_.indexOf(userid) < 0) {
-                arr_.push(userid);
-                users_online.set(arr[0], arr_);
+        var userid = parseInt(u_id, 10);
+        if (users_online.has(p_id)) {
+            var users_array = users_online.get(p_id);
+            if (users_array.indexOf(userid) < 0) {
+                users_array.push(userid);
+                users_online.set(p_id, users_array);
             } else {
-                var sockets = team_map.get(arr[0]);
+                var sockets = team_map.get(p_id);
                 if (sockets) {
                     for (var i = 0; i < sockets.length; i++) {
-                        sockets[i].emit('update_online_members', users_online.get(arr[0]));
+                        sockets[i].emit('update_online_members', users_online.get(p_id));
                     }
                 }
             }
         } else {
-            users_online.set(arr[0], [userid]);
+            users_online.set(p_id, [userid]);
         }
 
         // update online members info
-        var sockets = team_map.get(arr[0]);
+        var sockets = team_map.get(p_id);
         if (sockets) {
             for (var i = 0; i < sockets.length; i++) {
-                sockets[i].emit('update_online_members', users_online.get(arr[0]));
+                sockets[i].emit('update_online_members', users_online.get(p_id));
             }
         }
     });
@@ -56,9 +56,12 @@ io.sockets.on('connection', function (socket) {
     // broadcast the message to same team members //
     socket.on('to_server', function (data) {
         var arr = data.split(",");
-        var sockets = team_map.get(arr[1]);
+        var message = arr[0];
+        var p_id = arr[1];
+        var u_id = arr[2];
+        var sockets = team_map.get(p_id);
         for (var i = 0; i < sockets.length; i++) {
-            sockets[i].emit('to_client', arr[2]+','+arr[0]);
+            sockets[i].emit('to_client', u_id+','+message);
         }
     });
 
@@ -67,18 +70,18 @@ io.sockets.on('connection', function (socket) {
         var key = user_map.search(socket);
         if (key) {
             user_map.remove(key);
-            var t_key = key.split(',')[0];
-            var sockets = team_map.get(t_key);
+            var p_id = key.split(',')[0];
+            var sockets = team_map.get(p_id);
             sockets.splice(sockets.indexOf(socket), 1);
 
             // user disconnect info 
-            var users = users_online.get(t_key);
+            var users = users_online.get(p_id);
             var user_key = key.split(',')[1];
             var userid = parseInt(user_key, 10);
             users.splice(users.indexOf(userid), 1);
             if (sockets) {
                 for (var i = 0; i < sockets.length; i++) {
-                    sockets[i].emit('update_offline_members', users_online.get(t_key));
+                    sockets[i].emit('update_offline_members', users_online.get(p_id));
                 }    
             }
                 
