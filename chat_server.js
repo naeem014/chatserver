@@ -16,7 +16,7 @@ io.sockets.on('connection', function (socket) {
         var arr = data.split(",");
         var p_id = arr[0];
         var u_id = arr[1]; 
-        if (team_map.has(p_id) {
+        if (team_map.has(p_id)) {
             var sockets_array = team_map.get(p_id);
             sockets_array.push(socket);
             team_map.set(p_id, sockets_array);
