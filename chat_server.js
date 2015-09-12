@@ -14,6 +14,8 @@ io.sockets.on('connection', function (socket) {
     // store connected user info on connection //
     socket.on('info', function (data) {
         var arr = data.split(",");
+        var p_id = arr[0];
+        var u_id = arr[1]; 
         if (team_map.has(arr[0])) {
             var arr_ = team_map.get(arr[0]);
             arr_.push(socket);
@@ -30,6 +32,13 @@ io.sockets.on('connection', function (socket) {
             if (arr_.indexOf(userid) < 0) {
                 arr_.push(userid);
                 users_online.set(arr[0], arr_);
+            } else {
+                var sockets = team_map.get(arr[0]);
+                if (sockets) {
+                    for (var i = 0; i < sockets.length; i++) {
+                        sockets[i].emit('update_online_members', users_online.get(arr[0]));
+                    }
+                }
             }
         } else {
             users_online.set(arr[0], [userid]);
