@@ -36,7 +36,7 @@ io.sockets.on('connection', function (socket) {
         }
 
         // update online members info
-        var sockets = team_map.get(arr[1]);
+        var sockets = team_map.get(arr[0]);
         if (sockets) {
             for (var i = 0; i < sockets.length; i++) {
                 sockets[i].emit('update_online_members', users_online.get(arr[0]));
