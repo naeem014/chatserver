@@ -1,0 +1,6 @@
+{
+	"name" : "chatserver",
+	"scripts" : {
+		"start" : "node chat_server.js"
+	}
+}
