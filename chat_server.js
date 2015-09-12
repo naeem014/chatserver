@@ -81,7 +81,7 @@ io.sockets.on('connection', function (socket) {
             users.splice(users.indexOf(userid), 1);
             if (sockets) {
                 for (var i = 0; i < sockets.length; i++) {
-                    sockets[i].emit('update_offline_members', users_online.get(p_id));
+                    sockets[i].emit('update_offline_member', userid);
                 }    
             }
                 
