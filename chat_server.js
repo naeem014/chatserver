@@ -8,7 +8,7 @@ var server = require('http').createServer().listen(process.env.PORT || 8000);
 
 var io = require('socket.io')(server);
 
-
+// ready to deploy
 io.sockets.on('connection', function (socket) {
 
     // store connected user info on connection //
